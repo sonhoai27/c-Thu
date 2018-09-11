@@ -1,6 +1,9 @@
 #include "iostream"
 #include <stdio.h>
 #include "./mylib.h"
+#include <conio.h>
+#include <stdlib.h>
+#include <iomanip>
 using namespace std;
 
 class COMPLEX {
@@ -36,16 +39,19 @@ COMPLEX& COMPLEX::operator! () {
 class Matrix {
 	private: 
 	int ROW, COL;
-	int** M;
+	int **M;
 	public: 
 	Matrix(int row = 0, int col = 0);
-	int operator() (int i, int j);
+	~Matrix();
+	int operator() (int i, int j){
+		return M[i][j];
+	}
 	void getMatrix(int row, int col);
 	void putMatrix(int row, int col);
 	Matrix& operator+ (Matrix &mt);
 	Matrix& operator- (Matrix &mt);
 	Matrix& operator* (Matrix &mt);
-	~Matrix();
+	friend ostream& operator<< (ostream &os, Matrix &a);
 };
 Matrix::Matrix(int row, int col) {
 	ROW = row;
@@ -54,18 +60,13 @@ Matrix::Matrix(int row, int col) {
 	for(int i = 0; i < ROW; i++){
 		M[i] = new int[COL];
 	}
-}
-Matrix::~Matrix() {
-	delete [] M;
 	for(int i = 0; i < ROW; i++){
-		delete [] M[COL];
+		for(int j = 0; j < COL; j++){
+			M[i][j] = 0;
+		}
 	}
 }
-Matrix& Matrix::operator+ (Matrix &mt) {
-	for(int i = 0; i < ROW; i++){
-		
-	}
-}
+
 void Matrix::getMatrix(int row, int col) {
 	gotoxy(10,2);
 	cout<<"NHAP MA TRAN: "<<endl;
@@ -82,6 +83,7 @@ void Matrix::getMatrix(int row, int col) {
 	}
 }
 void Matrix::putMatrix(int row, int col) {
+	cout<<"AA";
 	gotoxy(70,2);
 	cout<<"IN MA TRAN: "<<endl;
 	gotoxy(70,4);
@@ -96,13 +98,63 @@ void Matrix::putMatrix(int row, int col) {
 		y = y + 1;
 	}
 }
+Matrix& Matrix::operator+ (Matrix &mt) {
+	if(COL != mt.COL || ROW != mt.ROW){
+		cout<<"2 ma tran không cung row va col!"<<endl;
+	}else {
+		Matrix matrix(ROW, COL);
+		for(int i = 0; i < ROW; i++){
+			for(int j = 0; j < COL; j++){
+				matrix.M[i][j] = M[i][j]+ mt.M[i][j];
+			}
+		}
+		return matrix;
+	}
+}
+Matrix& Matrix::operator- (Matrix &mt) {
+	if(COL != mt.COL || ROW != mt.ROW){
+		cout<<"2 ma tran không cung row va col!"<<endl;
+	}else {
+		Matrix matrix(ROW, COL);
+		for(int i = 0; i < ROW; i++){
+			for(int j = 0; j < COL; j++){
+				matrix.M[i][j] = M[i][j] - mt.M[i][j];
+			}
+		}
+		return matrix;
+	}
+}
+Matrix& Matrix::operator* (Matrix &mt) {
+	if(COL != mt.ROW || ROW != mt.COL){
+		cout<<"2 ma tran không cung row va col!"<<endl;
+	}else {
+		Matrix matrix(ROW, mt.COL);
+		for(int i = 0; i < ROW; i++){
+			for(int j = 0; j < mt.COL; j++){
+				matrix.M[i][j] = 0;
+				for(int z 0; z < COL;z++){
+					matrix.M[i][j] +=  M[i][k]*mt.M[k][j];
+				}
+			}
+		}
+		return matrix;
+	}
+}
+Matrix::~Matrix() {
+	for(int i = 0; i < ROW; i++){
+		delete []M[COL];
+	}
+	delete []M;
+}
 int main(){
 //	COMPLEX complex(2, -2), complex2(1, -1);
 //	complex.display();
 //	(complex + complex2).display();
 //	complex.display();
-	mt.getMatrix(5,5);
-	mt.putMatrix(5,5);
+	Matrix mt(2,2), mt2(2,2), mt1;
+	mt.getMatrix(2,2);
+	mt2.getMatrix(2,2);
+	(mt + mt2).putMatrix(2,2);
 	cout<<endl<<endl;
 	system("pause");
 	return 0;
