@@ -42,7 +42,7 @@ class Matrix {
 	int **M;
 	public: 
 	Matrix(int row = 0, int col = 0);
-	~Matrix();
+//	~Matrix();
 	int operator() (int i, int j){
 		return M[i][j];
 	}
@@ -125,36 +125,36 @@ Matrix& Matrix::operator- (Matrix &mt) {
 	}
 }
 Matrix& Matrix::operator* (Matrix &mt) {
-	if(COL != mt.ROW || ROW != mt.COL){
+	if(COL != mt.ROW){
 		cout<<"2 ma tran không cung row va col!"<<endl;
 	}else {
 		Matrix matrix(ROW, mt.COL);
 		for(int i = 0; i < ROW; i++){
 			for(int j = 0; j < mt.COL; j++){
 				matrix.M[i][j] = 0;
-				for(int z 0; z < COL;z++){
-					matrix.M[i][j] +=  M[i][k]*mt.M[k][j];
+				for(int z = 0; z < COL;z++){
+					matrix.M[i][j] +=  M[i][z]*mt.M[z][j];
 				}
 			}
 		}
 		return matrix;
 	}
 }
-Matrix::~Matrix() {
-	for(int i = 0; i < ROW; i++){
-		delete []M[COL];
-	}
-	delete []M;
-}
+//Matrix::~Matrix() {
+////	for(int i = 0; i < ROW; i++){
+////		delete []M[COL];
+////	}
+////	delete []M;
+//}
 int main(){
 //	COMPLEX complex(2, -2), complex2(1, -1);
 //	complex.display();
 //	(complex + complex2).display();
 //	complex.display();
-	Matrix mt(2,2), mt2(2,2), mt1;
+	Matrix mt(2,2), mt2(2,3), mt1;
 	mt.getMatrix(2,2);
-	mt2.getMatrix(2,2);
-	(mt + mt2).putMatrix(2,2);
+	mt2.getMatrix(2,3);
+	(mt * mt2).putMatrix(2,3);
 	cout<<endl<<endl;
 	system("pause");
 	return 0;
